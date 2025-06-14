@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Guia LGPD - Baixe seu PDF</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { background: #6A5ACD; color: white; border: none; padding: 10px 15px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>📘 Receba seu Guia LGPD</h2>
+  <form id="pdfForm">
+    <div class="form-group">
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
+    </div>
+    <div class="form-group">
+      <label>Telefone:</label>
+      <input type="tel" name="telefone" required>
+    </div>
+    <div class="form-group">
+      <label>E-mail:</label>
+      <input type="email" name="email" required>
+    </div>
+    <button type="submit">Enviar e Receber PDF</button>
+  </form>
+  <div id="response" style="margin-top: 20px;"></div>
+
+  <script>
+    document.getElementById('pdfForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const responseDiv = document.getElementById('response');
+      
+      responseDiv.innerHTML = '<p>Enviando...</p>';
+      
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbz4nR4dVpSq1M1fo9lp2M2jbDdLyflvcv1PxTlPFTxBJcNC4wWBEoG6GmmE4zdMpG2onA/exec', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.text();
+        responseDiv.innerHTML = `<p style="color:green;">✅ PDF enviado com sucesso! Verifique seu e-mail.</p>`;
+      } catch (error) {
+        responseDiv.innerHTML = `<p style="color:red;">Erro: ${error.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -37,23 +37,33 @@
 
   <script>
     document.getElementById('pdfForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const responseDiv = document.getElementById('response');
-      
-      responseDiv.innerHTML = '<p>Enviando...</p>';
-      
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycby4E6W9jZpQ3smtAWv-iANnlC_llsvqZmoue_ALS7adRh4PFHRZaLbMsl2aOCrO867g/exec', {
-          method: 'POST',
-          body: formData
-        });
-        const result = await response.text();
-        responseDiv.innerHTML = `<p style="color:green;">✅ PDF enviado com sucesso! Verifique seu e-mail.</p>`;
-      } catch (error) {
-        responseDiv.innerHTML = `<p style="color:red;">Erro: ${error.message}</p>`;
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const responseDiv = document.getElementById('response');
+
+  responseDiv.innerHTML = '<p>Enviando...</p>';
+
+  try {
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycby4E6W9jZpQ3smtAWv-iANnlC_llsvqZmoue_ALS7adRh4PFHRZaLbMsl2aOCrO867g/exec', 
+      {
+        method: 'POST',
+        body: new URLSearchParams(formData),
+        redirect: 'follow'
       }
-    });
+    );
+
+    const result = await response.json();
+    if (result.status === "success") {
+      responseDiv.innerHTML = '<p style="color:green;">✅ PDF enviado! Verifique seu e-mail.</p>';
+    } else {
+      throw new Error(result.message || "Erro desconhecido");
+    }
+  } catch (error) {
+    responseDiv.innerHTML = `<p style="color:red;">Erro: ${error.message}</p>`;
+    console.error("Detalhes do erro:", error);
+  }
+});
   </script>
   <footer>
     Ao clicar em Enviar e rececer PDF você aceita as politicas e concorda com a declaraçãp dde privacidade.
